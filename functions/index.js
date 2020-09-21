@@ -1,14 +1,27 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-
+const app = require('express')();
 admin.initializeApp();
 
-const express = require('express');
-const app = express();
+const firebaseConfig = {
+    apiKey: "AIzaSyCKPgU63bdCzCwzV7RLzg_Gzun_b-CjPHg",
+    authDomain: "socialapp-1249f.firebaseapp.com",
+    databaseURL: "https://socialapp-1249f.firebaseio.com",
+    projectId: "socialapp-1249f",
+    storageBucket: "socialapp-1249f.appspot.com",
+    messagingSenderId: "232345512570",
+    appId: "1:232345512570:web:65582005455f20153a69c3",
+    measurementId: "G-WREXF1VD13"
+};
+
+
+const firebase = require('firebase');
+firebase.initializeApp(firebaseConfig);
+
+const db = admin.firestore();
 
 app.get('/screams', (req, res) => {
-    admin
-        .firestore()
+    db
         .collection('screams')
         .orderBy('createdAt', 'desc')
         .get()
@@ -38,7 +51,7 @@ app.post('/scream', (req,res) => {
         createdAt: new Date().toISOString()
     };
 
-    admin.firestore()
+    db
         .collection('screams')
         .add(newScream)
         .then(doc => {
@@ -50,5 +63,37 @@ app.post('/scream', (req,res) => {
             
         })
 })
+
+// Sign Up route
+app.post('/signup', (req, res) => {
+    const newUser = {
+        email: req.body.email,
+        password: req.body.password,
+        confirmPassword: req.body.confirmPassword,
+        handle: req.body.handle
+    };
+
+    // TODO validate data
+    db.doc(`/users/${newUser.handle}`).get()
+        .then(doc => {
+            if(doc.exists) {
+                return res.status(400).json({ handle: 'this handle is already been taken'})
+            }else {
+                return firebase
+                            .auth()
+                            .createUserWithEmailAndPassword(newUser.email, newUser.password);
+            }
+        })
+        .then(data => {
+            return data.user.getIdToken();
+        })
+        .then(token => {
+            return res.status(201).json({ token });
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).json({ error: err.code })
+        })
+});
 
 exports.api = functions.https.onRequest(app); 

@@ -64,6 +64,18 @@ app.post('/scream', (req,res) => {
         })
 })
 
+// Helpers Methods
+const isEmail = (email) => {
+    const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if(email.match(regEx)) return true;
+    else return false;
+}
+
+const isEmpty = (string) => {
+    if(string.trim() === '') return true;
+    else return false;
+}
+
 // Sign Up route
 app.post('/signup', (req, res) => {
     const newUser = {
@@ -72,6 +84,22 @@ app.post('/signup', (req, res) => {
         confirmPassword: req.body.confirmPassword,
         handle: req.body.handle
     };
+
+    let errors = {};
+
+    // validate email
+    if(isEmpty(newUser.email)) {
+        errors.email = 'Email must not be empty'
+    }else if(!isEmail(newUser.email)) {
+        errors.email = 'Must be a valid email address'
+    }
+
+    // validate password and !empty
+    if(isEmpty(newUser.password)) errors.password = 'Must not be empty';
+    if(newUser.password !== newUser.confirmPassword) errors.confirmPassword = 'Passwords must match';
+    if(isEmpty(newUser.handle)) errors.handle = 'Must not be empty';
+
+    if(Object.keys(errors).length > 0) return res.status(400).json( errors)
 
     // TODO validate data
     let token, userId;
@@ -110,6 +138,34 @@ app.post('/signup', (req, res) => {
                 return res.status(500).json({ error: err.code })
             }
         })
+});
+
+app.post('/login', (req, res) => {
+    const user = {
+        email: req.body.email,
+        password: req.body.password
+    };
+
+    let errors = {};
+
+    if(isEmpty(user.email)) errors.email = 'Must not be empty'
+    if(isEmpty(user.password)) errors.password = 'Must not be empty'
+
+    if(Object.keys(errors).length > 0) return res.status(400).json(errors);
+
+    firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+        .then(data => {
+            return data.user.getIdToken();
+        })
+        .then((token) => {
+            return res.json({ token });
+        })
+        .catch((err) => {
+            console.error(err);
+            if(err.code === 'auth/wrong-password'){
+                return res.status(403).json({ general: 'Wrong credentials, please try again' });
+            } else return res.status(500).json({ error: err.code })
+        });
 });
 
 exports.api = functions.https.onRequest(app); 

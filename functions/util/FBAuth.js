@@ -9,7 +9,9 @@ module.exports = (req, res, next) => {
         return res.status(403).json({ error: 'Unauthorization' })
     }
 
-    admin.auth().verifyIdToken(idToken)
+    admin
+    .auth()
+    .verifyIdToken(idToken)
         .then(decodedToken => {
             req.user = decodedToken;
             return db.collection('user')

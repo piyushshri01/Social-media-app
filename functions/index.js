@@ -4,7 +4,7 @@ const FBAuth = require('./util/FBAuth');
 
 // Screams and User
 const { getAllScreams, postOneScream } = require('./handlers/screams');
-const { signUp, logIn } = require('./handlers/user')
+const { signUp, logIn, uploadImage } = require('./handlers/user')
 
 
 // get Screams Route
@@ -15,5 +15,7 @@ app.post('/scream', FBAuth, postOneScream)
 app.post('/signup', signUp);
 //Log In route
 app.post('/login', logIn);
+// 
+app.post('/user/image', FBAuth, uploadImage)
 
 exports.api = functions.https.onRequest(app); 

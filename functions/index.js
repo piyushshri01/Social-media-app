@@ -40,14 +40,41 @@ app.get('/screams', (req, res) => {
         .catch(err => console.log(err))
 })
 
+const FBAuth = (req, res, next) => {
+    let idToken;
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer ')){
+        idToken = req.headers.authorization.split('Bearer ')[1];
+    }else {
+        console.error('No token found')
+        return res.status(403).json({ error: 'Unauthorization' })
+    }
 
-app.post('/scream', (req,res) => {
-    if(req.method !== 'POST'){
-        return res.status(400).json({ error: 'Method not llowed '});
+    admin.auth().verifyIdToken(idToken)
+        .then(decodedToken => {
+            req.user = decodedToken;
+            return db.collection('user')
+                .where('userId', '==', req.user.uid)
+                .limit(1)
+                .get();
+        })
+        .then(data => {
+            req.user.handle = data.docs[0].data().handle;
+            return next()
+        })
+        .catch(err => {
+            console.error('Error while verifying token', err);
+            return res.status(403).json({ err })
+        })
+}
+
+
+app.post('/scream', FBAuth,  (req, res) => {
+    if(req.body.body.trim() === ''){
+        return res.status(400).json({ body : 'Body must not be empty' });
     }
     const newScream = {
         body: req.body.body,
-        userHandle: req.body.userHandle,
+        userHandle: req.user.handle,
         createdAt: new Date().toISOString()
     };
 
@@ -59,7 +86,7 @@ app.post('/scream', (req,res) => {
         })
         .catch(err => {
             res.status(500).json({ error: 'something went wrong'});
-            console.log(err);
+            console.error(err);
             
         })
 })

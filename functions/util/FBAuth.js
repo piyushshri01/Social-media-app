@@ -15,7 +15,8 @@ module.exports = (req, res, next) => {
         .then(decodedToken => {
             req.user = decodedToken;
             
-            return db.collection('user')
+            return db
+                .collection('user')
                 .where('userId', '==', req.user.uid)
                 .limit(1)
                 .get();
@@ -24,6 +25,7 @@ module.exports = (req, res, next) => {
             // console.log(data.docs[0]);
             
             req.user.handle = data.docs[0].data().handle;
+            req.user.imageUrl = data.docs[0].data().imageUrl;
             return next()
         })
         .catch(err => {

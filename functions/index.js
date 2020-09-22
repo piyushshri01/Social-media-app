@@ -4,18 +4,24 @@ const FBAuth = require('./util/FBAuth');
 
 // Screams and User
 const { getAllScreams, postOneScream } = require('./handlers/screams');
-const { signUp, logIn, uploadImage } = require('./handlers/user')
+const { signUp, logIn, uploadImage, addUserDetails, getAuthenticatedUser } = require('./handlers/user')
 
 
 // get Screams Route
 app.get('/screams', getAllScreams);
 // post one scream route
 app.post('/scream', FBAuth, postOneScream)
+// upload image router
+app.post('/user/image', FBAuth, uploadImage)
+// upload user details router
+app.post('/user', FBAuth, addUserDetails)
+// get user details 
+app.get('/user', FBAuth, getAuthenticatedUser)
 // Sign Up route
 app.post('/signup', signUp);
 //Log In route
 app.post('/login', logIn);
-// 
-app.post('/user/image', FBAuth, uploadImage)
+
+
 
 exports.api = functions.https.onRequest(app); 

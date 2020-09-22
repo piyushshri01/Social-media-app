@@ -14,12 +14,15 @@ module.exports = (req, res, next) => {
     .verifyIdToken(idToken)
         .then(decodedToken => {
             req.user = decodedToken;
+            
             return db.collection('user')
                 .where('userId', '==', req.user.uid)
                 .limit(1)
                 .get();
         })
         .then(data => {
+            // console.log(data.docs[0]);
+            
             req.user.handle = data.docs[0].data().handle;
             return next()
         })

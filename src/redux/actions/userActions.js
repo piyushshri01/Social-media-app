@@ -45,7 +45,7 @@ export const logoutUser = () => (dispatch) => {
 
 export const getUserData = () => (dispatch) => {
     dispatch({ type: LOADING_USER });
-    axios.get('/screams')
+    axios.get('/user')
         .then(res => {
             dispatch({
                 type: SET_USER,

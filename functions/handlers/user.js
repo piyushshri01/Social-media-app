@@ -48,7 +48,7 @@ exports.signUp = (req, res) => {
                 imageUrl: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noimg}?alt=media`,
                 userId,
             };
-            return db.doc(`/user/${newUser.handle}`).set(userCredentials)
+            return db.doc(`/users/${newUser.handle}`).set(userCredentials)
         })
         .then(() => {
             return res.status(201).json({ token });
@@ -87,9 +87,10 @@ exports.logIn = (req, res) => {
             console.error(err);
             // auth/wrong-password
             // auth/user-not user
-            if(err.code === 'auth/wrong-password'){
+            // if(err.code === 'auth/wrong-password'){
                 return res.status(403).json({ general: 'Wrong credentials, please try again' });
-            } else return res.status(500).json({ error: err.code })
+            // }
+            //  else return res.status(500).json({ error: err.code })
         });
 }
 
@@ -152,7 +153,7 @@ exports.addUserDetails = (req, res) => {
     console.log(userDetails);
     
 
-    db.doc(`/user/${req.user.handle}`).update(userDetails)
+    db.doc(`/users/${req.user.handle}`).update(userDetails)
         .then(() => {
             return res.json({ message: 'Details added successfully' });
         })
@@ -165,7 +166,7 @@ exports.addUserDetails = (req, res) => {
 // get own user details
 exports.getAuthenticatedUser = (req,res) => {
     let userData = {};
-    db.doc(`/user/${req.user.handle}`).get()
+    db.doc(`/users/${req.user.handle}`).get()
         .then(doc => {
             if(doc.exists) {
                 userData.credentials = doc.data();
@@ -217,7 +218,7 @@ exports.getUserDetails = (req, res) => {
                 return db
                         .collection('screams')
                         .where('userHandle', '==', req.params.handle)
-                        .orderBy('createdAt', 'desc')
+                        // .orderBy('createdAt', 'desc')
                         .get();
             } else {
                 return res.status(404).json({ error: 'user not found' })
@@ -249,7 +250,7 @@ exports.markNotificationsRead = (req, res) => {
     let batch = db.batch();
     req.body.forEach((notificationId) => {
         const notification = db.doc(`/notifications/${notificationId}`);
-        batch.update(Notification, { read: true });
+        batch.update(notification, { read: true });
     });
     batch.commit()
         .then(() => {

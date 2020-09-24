@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
-
+// scream component
 import Scream from '../components/Scream';
+// profile component
+import Profile from '../components/Profile';
 
 class home extends Component {
     state = {
@@ -11,7 +13,6 @@ class home extends Component {
     componentDidMount() {
         axios.get('/screams')
             .then(res => {
-                console.log(res.data);
                 this.setState({
                     screams: res.data
                 })
@@ -28,7 +29,7 @@ class home extends Component {
                     {recentScreamsMarkup}
                 </Grid>
                 <Grid item sm={4} xs={12}>
-                    <p>Profile...</p>
+                    <Profile/>
                 </Grid>
             </Grid>
         )

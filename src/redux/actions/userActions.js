@@ -7,6 +7,8 @@ export const loginUser = (userData, history) => (dispatch) => {
         .post('/login', userData)
             .then((res) => {
                 const FBIdToken = `Bearer ${res.data.token}`;
+                console.log(FBIdToken);
+                
                 localStorage.setItem('FBIdToken', `Bearer ${res.data.token}`);
                 axios.defaults.headers.common['Authorization'] = FBIdToken;
                 dispatch(getUserData());
@@ -23,7 +25,7 @@ export const loginUser = (userData, history) => (dispatch) => {
 
 export const getUserData = () => (dispatch) => {
     dispatch({ type: LOADING_USER });
-    axios.get('/user')
+    axios.get('/screams')
         .then(res => {
             dispatch({
                 type: SET_USER,

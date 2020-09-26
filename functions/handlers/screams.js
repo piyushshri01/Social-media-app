@@ -74,7 +74,7 @@ exports.getScream = (req, res) => {
             return res.json(screamData);
         })
         .catch(err => {
-            console.error(error);
+            console.error(err);
             res.status(500).json({ error: err.code })
         });
 }

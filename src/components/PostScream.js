@@ -18,14 +18,16 @@ import CloseIcon from '@material-ui/icons/Close';
 
 // redux stuff
 import { connect } from 'react-redux';
-import { postScream } from '../redux/actions/dataActions';
+import { postScream, clearErrors } from '../redux/actions/dataActions';
 
 // styles 
 import styles from '../util/theme';
 const style = {
     ...styles,
     submitButton: {
-        position: 'relative'
+        position: 'relative',
+        marginTop: '10px',
+        float: 'right',
     },
     progressSpinner: {
         position: 'absolute'
@@ -33,7 +35,7 @@ const style = {
     closeButton: {
         position: 'absolute',
         left: '90%',
-        top: '10%'
+        top: '3%'
     }
 }
 
@@ -50,8 +52,9 @@ class PostScream extends Component {
             })
         }
         if(!nextProps.UI.errors && !nextProps.UI.loading){
-            this.setState({ body: ''})
-            this.handleClose();
+            this.setState({ body: '', open: false,
+            errors: {} })
+            // this.handleClose();
         }
     }
     handleOpen = () => {
@@ -60,6 +63,7 @@ class PostScream extends Component {
         })
     }
     handleClose = () => {
+        this.props.clearErrors();
         this.setState({
             open: false,
             errors: {}
@@ -72,7 +76,7 @@ class PostScream extends Component {
     }
     handleSubmit = (event) => {
         event.preventDefault();
-        this.props.postScream({body: this.state.body})
+        this.props.postScream({body: this.state.body}) 
     }
     render() {
         const { errors } = this.state;
@@ -121,6 +125,7 @@ class PostScream extends Component {
 
 PostScream.propTypes = {
     postScream: PropTypes.func.isRequired,
+    clearErrors: PropTypes.func.isRequired,
     UI: PropTypes.object.isRequired
 }
 
@@ -128,4 +133,4 @@ const mapStateToProps = (state) => ({
     UI: state.UI
 });
 
-export default connect(mapStateToProps, { postScream })(withStyles(style)(PostScream));
+export default connect(mapStateToProps, { postScream, clearErrors })(withStyles(style)(PostScream));

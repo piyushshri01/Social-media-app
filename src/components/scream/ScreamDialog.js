@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import MyButton from '../../util/MyButton';
 import LikeButton from './LikeButton.js';
-
+import Comments from './Comments';
 //MUI Stuff
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -67,13 +67,13 @@ class ScreamDialog extends Component {
         this.setState({ open: false })
     }
     render() {
-        const { classes, scream: { screamId, body, createdAt, likeCount, commentCount, userImage, userHandle }, UI: { loading } } = this.props;
+        const { classes, scream: { screamId, body, createdAt, likeCount, commentCount, userImage, userHandle, comments }, UI: { loading } } = this.props;
         const dialogMarkup = loading ? (
             <div className={classes.spinnerDiv}>
                 <CircularProgress size={200} thickness={2}/>
             </div>
         ) : (
-            <Grid container spacing={10}>
+            <Grid container spacing={16}>
                 <Grid item sm={5}>
                     <img src={userImage} alt="Profile" className={classes.profileImage}/>
                 </Grid>
@@ -100,6 +100,8 @@ class ScreamDialog extends Component {
                         </MyButton>
                         <span>{commentCount} Comments</span>
                 </Grid>
+                <hr className={classes.visibleSeparator}/>
+                <Comments comments={comments}/>
             </Grid>
         )
         return (

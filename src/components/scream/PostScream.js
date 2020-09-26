@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import MyButton from '../util/MyButton';
+import MyButton from '../../util/MyButton';
 
 //Mui Stuff
 import Button from '@material-ui/core/Button';
@@ -18,10 +18,10 @@ import CloseIcon from '@material-ui/icons/Close';
 
 // redux stuff
 import { connect } from 'react-redux';
-import { postScream, clearErrors } from '../redux/actions/dataActions';
+import { postScream, clearErrors } from '../../redux/actions/dataActions';
 
 // styles 
-import styles from '../util/theme';
+import styles from '../../util/theme';
 const style = {
     ...styles,
     submitButton: {

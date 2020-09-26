@@ -10,7 +10,7 @@ import jwtDecode from 'jwt-decode';
 import { Provider } from 'react-redux';
 import store from './redux/store';
 // components
-import Navbar from './components/Navbar'
+import Navbar from './components/layout/Navbar';
 import AuthRoute from './util/AuthRoute'
 // Pages
 import Home from './pages/home'

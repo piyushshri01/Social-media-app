@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
-import MyButton from '../util/MyButton';
+import MyButton from '../../util/MyButton';
 import LikeButton from './LikeButton.js';
 
 //MUI Stuff
@@ -20,10 +20,10 @@ import ChatIcon from '@material-ui/icons/Chat';
 
 // Redux Stuff
 import { connect } from 'react-redux'
-import { getScream } from '../redux/actions/dataActions';
+import { getScream } from '../../redux/actions/dataActions';
 
 // styles
-import styles from '../util/theme';
+import styles from '../../util/theme';
 const style = {
     ...styles,
     invisibleSeparator: {

@@ -107,6 +107,24 @@ export const postScream = (newScream) => (dispatch) => {
         })
 }
 
+// get user data
+export const getUserData = (userHandle) => dispatch => {
+    dispatch({ type: LOADING_DATA });
+    axios.get(`/user/${userHandle}`)
+        .then(res => {
+            dispatch({
+                type: SET_SCREAMS,
+                payload: res.data.screams
+            });
+        })
+        .catch(err => {
+            dispatch({
+                type: SET_SCREAMS,
+                payload: null
+            });
+        });
+};
+
 export const clearErrors = () => dispatch => {
     dispatch({ type: CLEAR_ERRORS })
 }

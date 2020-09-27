@@ -16,6 +16,7 @@ import AuthRoute from './util/AuthRoute'
 import Home from './pages/home'
 import Login from './pages/login'
 import Signup from './pages/signup'
+import user from './pages/user'
 // Redux 
 import { SET_AUTHENTICATED } from './redux/types';
 import { logoutUser, getUserData } from './redux/actions/userActions';
@@ -51,6 +52,7 @@ class App extends Component {
                     <Route exact path="/" component={Home} />
                     <AuthRoute exact path="/login" component={Login}/>
                     <AuthRoute exact path="/signup" component={Signup}/>
+                    <Route exact path="/users/:handle" component={user}/>
                   </Switch>
                 </div>
               </Router>
